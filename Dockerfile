@@ -4,7 +4,8 @@ COPY package*.json .
 RUN npm install
 COPY . .
 RUN npx parcel build "./src/index.html" --dist-dir "./dist" --public-url "./" \
-&& npx parcel build "./src/feedback.html" --dist-dir "./dist" --public-url "./"
+&& npx parcel build "./src/feedback.html" --dist-dir "./dist" --public-url "./"\
+&& npx parcel build "./src/contact.html" --dist-dir "./dist" --public-url "./"
 
 
 FROM nginx:1.29.3-alpine
