@@ -1,23 +1,9 @@
-# Use Node lightweight image
-FROM node:20-alpine
-
-# Set working directory
+FROM node:25-alpine AS build-stage
 WORKDIR /app
-
-# Copy package.json (for npm dependencies)
-COPY package*.json ./
-
-# Install Parcel globally
-RUN npm install -g parcel
-
-# Copy all source files
+COPY package*.json .
+RUN npm install
 COPY . .
+RUN npx parcel build "./src/index.html" --dist-dir "./dist" --public-url "./"
 
-# Build the website
-RUN parcel build src/index.html --dist-dir dist
-
-# Expose port for testing
-EXPOSE 1234
-
-# Start static server
-CMD ["npx", "serve", "-s", "dist", "-l", "1234"]
+FROM nginx:1.29.3-alpine
+COPY --from=build-stage /app/dist/ /usr/share/nginx/html
